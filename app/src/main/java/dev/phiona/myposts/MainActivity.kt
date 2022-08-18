@@ -16,12 +16,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         getPosts()
 
-            }
-
-
+    }
     fun getPosts(){
         val retrofit=ApiClient.buildApiClient(ApiInterface::class.java)
         var request=retrofit.getPosts()
@@ -31,20 +28,31 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<List<Post>>, response: Response<List<Post>>) {
                 if (response.isSuccessful){
                     val  post=response.body()
-                    Log.d("TAG", post.toString())
-                    Toast.makeText(baseContext, "fetched ${post!!.size} posts",
-                    Toast.LENGTH_LONG).show()
-
-                    var commentsAdapter=RetrofitRvAdapter(baseContext,post)
-                    binding.rvComments.layoutManager=LinearLayoutManager(baseContext)
-                    binding.rvComments.adapter=commentsAdapter
+                    if (post !=null){
+                        displayPost(post)
+                        displayComments(commentList )
+                    }
+//                    var commentsAdapter=RetrofitRvAdapter(post)
+//                    binding.rvComments.layoutManager=LinearLayoutManager(baseContext)
+//                    binding.rvComments.adapter=commentsAdapter
                 }
-
             }
 
             override fun onFailure(call: Call<List<Post>>, t: Throwable) {
+                Toast.makeText(baseContext,t.message,Toast.LENGTH_LONG).show()
 
             }
         })
     }
+    fun displayPost(postList: List<Post>){
+        var commentsAdapter=RetrofitRvAdapter(postList)
+        binding.rvComments.layoutManager=LinearLayoutManager(this)
+        binding.rvComments.adapter=commentsAdapter
+    }
+    fun displayComments(commentList: List<Comment>){
+        var commentAdapter=CommentsRvAdapter(commentList)
+        binding.rvCommentsPost.layoutManager=LinearLayoutManager(this)
+        binding.rvComments.adapter=commentAdapter
+    }
+
 }

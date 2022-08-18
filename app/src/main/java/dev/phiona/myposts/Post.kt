@@ -2,9 +2,9 @@ package dev.phiona.myposts
 
 
 data class Post(var userId:String,
-                var Id:String,
-                var Tittle:String,
-                var Body:String)
+                var id:String,
+                var title:String,
+                var body:String)
 
 data class Comment(var PostId:Int,
                   var Id: Int,
